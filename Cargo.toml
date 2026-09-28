@@ -1,0 +1,30 @@
+[package]
+name = "kelpie-scratch"
+version = "0.1.0"
+edition = "2024"
+# shep's MSRV. A dog or client that needs a newer compiler than the shepherd
+# it works with is a bad example.
+rust-version = "1.88"
+description = "A public scratch repository for kelpie's live checks, archived once they are done"
+repository = "https://github.com/shep-pm/kelpie-scratch"
+license = "MIT OR Apache-2.0"
+readme = "README.md"
+publish = false
+
+[dependencies]
+
+[lints.rust]
+missing_docs = "deny"
+missing_debug_implementations = "deny"
+unsafe_code = "forbid"
+
+[lints.clippy]
+all = { level = "warn", priority = -1 }
+
+# Debug info dominates a debug build, and a dependency's is never what is
+# being debugged.
+[profile.dev]
+debug = "line-tables-only"
+
+[profile.dev.package."*"]
+debug = false
