@@ -8,6 +8,11 @@ pub fn clamp_percent(value: i64) -> u8 {
     value.clamp(0, 100) as u8
 }
 
+/// Adds two percentages, saturating at `100` when the sum would exceed it.
+pub fn add_percent(a: u8, b: u8) -> u8 {
+    clamp_percent(i64::from(a) + i64::from(b))
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -30,5 +35,15 @@ mod tests {
     #[test]
     fn above_range_clamps_to_hundred() {
         assert_eq!(clamp_percent(101), 100);
+    }
+
+    #[test]
+    fn add_percent_below_hundred_sums_exactly() {
+        assert_eq!(add_percent(30, 40), 70);
+    }
+
+    #[test]
+    fn add_percent_above_hundred_saturates() {
+        assert_eq!(add_percent(70, 50), 100);
     }
 }
