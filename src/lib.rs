@@ -13,6 +13,19 @@ pub fn add_percent(a: u8, b: u8) -> u8 {
     clamp_percent(i64::from(a) + i64::from(b))
 }
 
+/// Returns what percentage `part` is of `whole`, rounded down and passed
+/// through [`clamp_percent`].
+///
+/// Returns `None` when `whole` is `0`.
+pub fn percent_of(part: u32, whole: u32) -> Option<u8> {
+    if whole == 0 {
+        return None;
+    }
+
+    let percent = u64::from(part) * 100 / u64::from(whole);
+    Some(clamp_percent(percent as i64))
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -45,5 +58,30 @@ mod tests {
     #[test]
     fn add_percent_above_hundred_saturates() {
         assert_eq!(add_percent(70, 50), 100);
+    }
+
+    #[test]
+    fn percent_of_zero_part_is_zero() {
+        assert_eq!(percent_of(0, 50), Some(0));
+    }
+
+    #[test]
+    fn percent_of_partial_value_rounds_down() {
+        assert_eq!(percent_of(1, 3), Some(33));
+    }
+
+    #[test]
+    fn percent_of_exact_whole_is_hundred() {
+        assert_eq!(percent_of(50, 50), Some(100));
+    }
+
+    #[test]
+    fn percent_of_part_larger_than_whole_clamps_to_hundred() {
+        assert_eq!(percent_of(150, 50), Some(100));
+    }
+
+    #[test]
+    fn percent_of_zero_whole_is_none() {
+        assert_eq!(percent_of(1, 0), None);
     }
 }
