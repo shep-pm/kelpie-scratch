@@ -26,6 +26,13 @@ pub fn percent_of(part: u32, whole: u32) -> Option<u8> {
     Some(clamp_percent(percent as i64))
 }
 
+/// Renders `p` as a percentage string, like `"42%"`.
+///
+/// Values over `100` are passed through [`clamp_percent`] first.
+pub fn format_percent(p: u8) -> String {
+    format!("{}%", clamp_percent(i64::from(p)))
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -83,5 +90,25 @@ mod tests {
     #[test]
     fn percent_of_zero_whole_is_none() {
         assert_eq!(percent_of(1, 0), None);
+    }
+
+    #[test]
+    fn format_percent_zero() {
+        assert_eq!(format_percent(0), "0%");
+    }
+
+    #[test]
+    fn format_percent_mid_range() {
+        assert_eq!(format_percent(42), "42%");
+    }
+
+    #[test]
+    fn format_percent_hundred() {
+        assert_eq!(format_percent(100), "100%");
+    }
+
+    #[test]
+    fn format_percent_above_hundred_clamps() {
+        assert_eq!(format_percent(250), "100%");
     }
 }
