@@ -12,8 +12,11 @@
 /// ```
 #[must_use]
 pub fn clamp_percent(value: i64) -> u8 {
-    // The clamp bounds the value to 0..=100, so the conversion always fits.
-    u8::try_from(value.clamp(0, 100)).unwrap_or(100)
+    match u8::try_from(value) {
+        Ok(in_byte_range) => in_byte_range.min(100),
+        Err(_) if value < 0 => 0,
+        Err(_) => 100,
+    }
 }
 
 #[cfg(test)]
