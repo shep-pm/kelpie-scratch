@@ -33,6 +33,18 @@ pub fn format_percent(p: u8) -> String {
     format!("{}%", clamp_percent(i64::from(p)))
 }
 
+/// Draws `p` as a text bar of `width` characters, like `"[####------]"`.
+///
+/// Values over `100` are passed through [`clamp_percent`] first. The filled
+/// portion is rounded down to the nearest whole character.
+pub fn percent_bar(p: u8, width: usize) -> String {
+    let percent = clamp_percent(i64::from(p));
+    let filled = (width as u128 * u128::from(percent) / 100) as usize;
+    let empty = width - filled;
+
+    format!("[{}{}]", "#".repeat(filled), "-".repeat(empty))
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -110,5 +122,30 @@ mod tests {
     #[test]
     fn format_percent_above_hundred_clamps() {
         assert_eq!(format_percent(250), "100%");
+    }
+
+    #[test]
+    fn percent_bar_zero_is_empty() {
+        assert_eq!(percent_bar(0, 10), "[----------]");
+    }
+
+    #[test]
+    fn percent_bar_fifty_is_half_filled() {
+        assert_eq!(percent_bar(50, 10), "[#####-----]");
+    }
+
+    #[test]
+    fn percent_bar_hundred_is_full() {
+        assert_eq!(percent_bar(100, 10), "[##########]");
+    }
+
+    #[test]
+    fn percent_bar_non_exact_division_rounds_down() {
+        assert_eq!(percent_bar(33, 10), "[###-------]");
+    }
+
+    #[test]
+    fn percent_bar_zero_width_is_empty_brackets() {
+        assert_eq!(percent_bar(50, 0), "[]");
     }
 }
