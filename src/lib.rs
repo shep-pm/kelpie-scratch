@@ -39,7 +39,7 @@ pub fn format_percent(p: u8) -> String {
 /// portion is rounded down to the nearest whole character.
 pub fn percent_bar(p: u8, width: usize) -> String {
     let percent = clamp_percent(i64::from(p));
-    let filled = width * usize::from(percent) / 100;
+    let filled = (width as u128 * u128::from(percent) / 100) as usize;
     let empty = width - filled;
 
     format!("[{}{}]", "#".repeat(filled), "-".repeat(empty))
@@ -142,5 +142,10 @@ mod tests {
     #[test]
     fn percent_bar_non_exact_division_rounds_down() {
         assert_eq!(percent_bar(33, 10), "[###-------]");
+    }
+
+    #[test]
+    fn percent_bar_zero_width_is_empty_brackets() {
+        assert_eq!(percent_bar(50, 0), "[]");
     }
 }
