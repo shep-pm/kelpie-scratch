@@ -138,4 +138,9 @@ mod tests {
     fn percent_bar_hundred_is_full() {
         assert_eq!(percent_bar(100, 10), "[##########]");
     }
+
+    #[test]
+    fn percent_bar_non_exact_division_rounds_down() {
+        assert_eq!(percent_bar(33, 10), "[###-------]");
+    }
 }
