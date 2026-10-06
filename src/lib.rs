@@ -13,6 +13,16 @@ pub fn add_percent(a: u8, b: u8) -> u8 {
     clamp_percent(i64::from(a) + i64::from(b))
 }
 
+/// Subtracts `b` from `a`, flooring at `0` when `b` is larger.
+///
+/// Both inputs are passed through [`clamp_percent`] first.
+pub fn sub_percent(a: u8, b: u8) -> u8 {
+    let a = clamp_percent(i64::from(a));
+    let b = clamp_percent(i64::from(b));
+
+    a.saturating_sub(b)
+}
+
 /// Returns what percentage `part` is of `whole`, rounded down and passed
 /// through [`clamp_percent`].
 ///
@@ -77,6 +87,21 @@ mod tests {
     #[test]
     fn add_percent_above_hundred_saturates() {
         assert_eq!(add_percent(70, 50), 100);
+    }
+
+    #[test]
+    fn sub_percent_below_hundred_subtracts_exactly() {
+        assert_eq!(sub_percent(70, 20), 50);
+    }
+
+    #[test]
+    fn sub_percent_larger_subtrahend_floors_at_zero() {
+        assert_eq!(sub_percent(20, 70), 0);
+    }
+
+    #[test]
+    fn sub_percent_above_hundred_minuend_clamps_first() {
+        assert_eq!(sub_percent(150, 20), 80);
     }
 
     #[test]
