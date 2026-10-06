@@ -55,6 +55,26 @@ pub fn percent_bar(p: u8, width: usize) -> String {
     format!("[{}{}]", "#".repeat(filled), "-".repeat(empty))
 }
 
+/// Returns the mean of `values`, rounded half up.
+///
+/// Each value is passed through [`clamp_percent`] first.
+///
+/// Returns `None` when `values` is empty.
+pub fn mean_percent(values: &[u8]) -> Option<u8> {
+    if values.is_empty() {
+        return None;
+    }
+
+    let count = values.len() as u64;
+    let sum: u64 = values
+        .iter()
+        .map(|&v| u64::from(clamp_percent(i64::from(v))))
+        .sum();
+    let mean = (sum * 2 + count) / (count * 2);
+
+    Some(mean as u8)
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -172,5 +192,20 @@ mod tests {
     #[test]
     fn percent_bar_zero_width_is_empty_brackets() {
         assert_eq!(percent_bar(50, 0), "[]");
+    }
+
+    #[test]
+    fn mean_percent_empty_slice_is_none() {
+        assert_eq!(mean_percent(&[]), None);
+    }
+
+    #[test]
+    fn mean_percent_half_rounds_up() {
+        assert_eq!(mean_percent(&[50, 51]), Some(51));
+    }
+
+    #[test]
+    fn mean_percent_above_hundred_values_clamp_first() {
+        assert_eq!(mean_percent(&[100, 200]), Some(100));
     }
 }
