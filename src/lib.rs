@@ -60,6 +60,14 @@ pub fn percent_bar(p: u8, width: usize) -> String {
 /// Each value is passed through [`clamp_percent`] first.
 ///
 /// Returns `None` when `values` is empty.
+///
+/// # Examples
+///
+/// ```
+/// use kelpie_scratch::mean_percent;
+///
+/// assert_eq!(mean_percent(&[]), None);
+/// ```
 pub fn mean_percent(values: &[u8]) -> Option<u8> {
     if values.is_empty() {
         return None;
