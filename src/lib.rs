@@ -213,7 +213,7 @@ mod tests {
     }
 
     #[test]
-    fn mean_percent_above_hundred_values_clamp_first() {
+    fn mean_percent_clamps_values_above_hundred_before_averaging() {
         assert_eq!(mean_percent(&[100, 200]), Some(100));
     }
 }
