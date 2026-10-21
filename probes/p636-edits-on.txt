@@ -1,2 +1,3 @@
 edits-on
 allow-edits-as-opened
+allow-edits-as-opened
