@@ -83,6 +83,13 @@ pub fn mean_percent(values: &[u8]) -> Option<u8> {
     Some(mean as u8)
 }
 
+/// Returns what is left of `100` after taking `p` away.
+///
+/// `p` is passed through [`clamp_percent`] first, so values over `100` leave `0`.
+pub fn complement_percent(p: u8) -> u8 {
+    100 - clamp_percent(i64::from(p))
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -215,5 +222,25 @@ mod tests {
     #[test]
     fn mean_percent_clamps_values_above_hundred_before_averaging() {
         assert_eq!(mean_percent(&[100, 200]), Some(100));
+    }
+
+    #[test]
+    fn complement_percent_of_zero_is_hundred() {
+        assert_eq!(complement_percent(0), 100);
+    }
+
+    #[test]
+    fn complement_percent_subtracts_from_hundred() {
+        assert_eq!(complement_percent(30), 70);
+    }
+
+    #[test]
+    fn complement_percent_of_hundred_is_zero() {
+        assert_eq!(complement_percent(100), 0);
+    }
+
+    #[test]
+    fn complement_percent_above_range_is_zero() {
+        assert_eq!(complement_percent(250), 0);
     }
 }
