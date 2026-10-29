@@ -107,6 +107,23 @@ pub fn max_percent(values: &[u8]) -> Option<u8> {
     values.iter().map(|&v| clamp_percent(i64::from(v))).max()
 }
 
+/// Returns the smallest of `values`.
+///
+/// Each value is passed through [`clamp_percent`] first.
+///
+/// Returns `None` when `values` is empty.
+///
+/// # Examples
+///
+/// ```
+/// use kelpie_scratch::min_percent;
+///
+/// assert_eq!(min_percent(&[]), None);
+/// ```
+pub fn min_percent(values: &[u8]) -> Option<u8> {
+    values.iter().map(|&v| clamp_percent(i64::from(v))).min()
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -274,5 +291,20 @@ mod tests {
     #[test]
     fn max_percent_clamps_above_range() {
         assert_eq!(max_percent(&[40, 250]), Some(100));
+    }
+
+    #[test]
+    fn min_percent_of_empty_is_none() {
+        assert_eq!(min_percent(&[]), None);
+    }
+
+    #[test]
+    fn min_percent_picks_the_smallest() {
+        assert_eq!(min_percent(&[10, 70, 30]), Some(10));
+    }
+
+    #[test]
+    fn min_percent_clamps_above_range() {
+        assert_eq!(min_percent(&[250, 255]), Some(100));
     }
 }
