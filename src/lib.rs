@@ -90,6 +90,23 @@ pub fn complement_percent(p: u8) -> u8 {
     100 - clamp_percent(i64::from(p))
 }
 
+/// Returns the largest of `values`.
+///
+/// Each value is passed through [`clamp_percent`] first.
+///
+/// Returns `None` when `values` is empty.
+///
+/// # Examples
+///
+/// ```
+/// use kelpie_scratch::max_percent;
+///
+/// assert_eq!(max_percent(&[]), None);
+/// ```
+pub fn max_percent(values: &[u8]) -> Option<u8> {
+    values.iter().map(|&v| clamp_percent(i64::from(v))).max()
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -242,5 +259,20 @@ mod tests {
     #[test]
     fn complement_percent_above_range_is_zero() {
         assert_eq!(complement_percent(250), 0);
+    }
+
+    #[test]
+    fn max_percent_of_empty_is_none() {
+        assert_eq!(max_percent(&[]), None);
+    }
+
+    #[test]
+    fn max_percent_picks_the_largest() {
+        assert_eq!(max_percent(&[10, 70, 30]), Some(70));
+    }
+
+    #[test]
+    fn max_percent_clamps_above_range() {
+        assert_eq!(max_percent(&[40, 250]), Some(100));
     }
 }
