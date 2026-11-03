@@ -9,3 +9,4 @@ Kelpie opens pull requests here to test its CodeRabbit rounds, from `clamp_perce
 MIT OR Apache-2.0, at your option.
 
 Spike: a pull request the App opens (2026-11-03).
+Second push, to see a new head without kelpie checks.
